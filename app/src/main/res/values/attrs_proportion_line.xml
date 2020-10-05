@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <declare-styleable name="ProportionLine" tools:ignore="ResourceName">
+        <attr name="android:padding" />
+        <attr name="paddingStart" />
+        <attr name="android:paddingLeft" />
+        <attr name="android:paddingTop" />
+        <attr name="android:paddingRight" />
+        <attr name="paddingEnd" />
+        <attr name="android:layout_margin" />
+        <attr name="android:layout_marginStart" />
+        <attr name="android:layout_marginLeft" />
+        <attr name="android:layout_marginTop" />
+        <attr name="android:layout_marginRight" />
+        <attr name="android:layout_marginEnd" />
+        <attr name="android:layout_marginBottom" />
+        <attr name="android:minHeight" />
+        <attr name="colorSeq" format="reference" />
+    </declare-styleable>
+
+    <string-array name="ProportionColors">
+        <item>#FFCD4747</item>
+        <item>#FFC107</item>
+        <item>#E91E63</item>
+        <item>#2196F3</item>
+        <item>#9C27B0</item>
+        <item>#4CAF50</item>
+    </string-array>
+</resources>

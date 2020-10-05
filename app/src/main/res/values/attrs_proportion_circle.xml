@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ProportionCircle">
+        <attr name="inner_padding" format="dimension" />
+        <attr name="circle_style" format="enum">
+            <enum name="stroke" value="0" />
+            <enum name="fill" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>
