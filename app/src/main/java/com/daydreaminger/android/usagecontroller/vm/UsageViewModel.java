@@ -8,6 +8,7 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.blankj.utilcode.util.AppUtils;
 import com.daydreaminger.android.usagecontroller.control.UsageHandler;
 import com.daydreaminger.android.usagecontroller.model.UsageInfo;
 import com.daydreaminger.android.usagecontroller.utils.TimeUtils;
@@ -19,11 +20,11 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
+ * 获取整合后的使用情况数据
+ *
  * @author : daydreaminger
  * @date : 2020/10/1 23:05
  */
@@ -59,6 +60,8 @@ public class UsageViewModel extends ViewModel {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     UsageHandler.coverAndroidQField(info, usageStats);
                 }
+                info.mAppInfo = AppUtils.getAppInfo(usageStats.getPackageName());
+                Log.i(TAG, "asyncGetUsageState: app name:" + info.mAppInfo.getName());
                 result.add(info);
             }
             //获取了结果后，需要设置MutableLiveData的值
@@ -67,21 +70,16 @@ public class UsageViewModel extends ViewModel {
             emitter.onNext(result);
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<UsageInfo>>() {
-                    @Override
-                    public void accept(List<UsageInfo> usageWrappers) throws Exception {
-                        usageStates.setValue(usageWrappers);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        Log.i(TAG, "accept: error");
-                    }
-                }, new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        Log.i(TAG, "run: complete.");
-                    }
+                .subscribe(usageWrappers -> {
+                    usageStates.setValue(usageWrappers);
+                    Log.i(TAG, "accept: ");
+                }, throwable -> {
+                    Log.i(TAG, "accept: error");
+                    Log.i(TAG, "accept: error");
+                }, () -> {
+                    Log.i(TAG, "run: complete.");
+                    Log.i(TAG, "run: complete.");
                 });
     }
+
 }

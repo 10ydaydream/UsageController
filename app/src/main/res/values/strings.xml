@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">屏幕时间管理</string>
+
+    <string name="format_hour">%d小时</string>
+    <string name="format_minute">%d分</string>
+    <string name="format_second">%d秒</string>
 </resources>

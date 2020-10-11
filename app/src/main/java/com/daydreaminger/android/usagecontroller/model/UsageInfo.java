@@ -1,5 +1,7 @@
 package com.daydreaminger.android.usagecontroller.model;
 
+import com.blankj.utilcode.util.AppUtils;
+
 /**
  * 记录必要的使用详情相关信息
  *
@@ -7,6 +9,9 @@ package com.daydreaminger.android.usagecontroller.model;
  * @date : 2020/10/5 13:39
  */
 public class UsageInfo {
+    //app info
+    public AppUtils.AppInfo mAppInfo;
+
     //===============UsageStats
 
     //SDK API提供可用的字段

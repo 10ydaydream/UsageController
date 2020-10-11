@@ -1,12 +1,13 @@
 package com.daydreaminger.android.usagecontroller.ui.activity;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,11 +22,22 @@ import com.daydreaminger.android.usagecontroller.utils.AppSettingUtils;
 public class SplashActivity extends AppBaseActivity {
     private static final String TAG = "SplashActivity";
 
+    private Handler handler;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity_splash);
-        reqPermission();
+        handler = new Handler();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        handler.postDelayed(() -> {
+            Log.i(TAG, "run: ");
+            reqPermission();
+        }, 100);
     }
 
     /**
@@ -74,18 +86,13 @@ public class SplashActivity extends AppBaseActivity {
     private void showOverWindowDialog() {
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("提示")
-                .setMessage("需要")
+                .setMessage("需要打开悬浮窗权限")
                 .setNegativeButton("取消", (dialog1, which) -> {
                     dialog1.dismiss();
                     finish();
                 })
                 .setPositiveButton("设置", (dialog12, which) -> {
-                    //
                     dialog12.dismiss();
-//                    requestPermissions(
-//                            new String[]{Manifest.permission.SYSTEM_ALERT_WINDOW},
-//                            1024
-//                    );
                     Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
                     startActivityForResult(intent, 1024);
                 })
