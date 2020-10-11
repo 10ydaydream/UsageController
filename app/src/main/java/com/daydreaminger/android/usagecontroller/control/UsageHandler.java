@@ -8,12 +8,16 @@ import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.os.Build;
+import android.util.ArrayMap;
 
 import androidx.annotation.RequiresApi;
 
+import com.blankj.utilcode.util.ReflectUtils;
 import com.daydreaminger.android.usagecontroller.AppHolder;
 import com.daydreaminger.android.usagecontroller.model.UsageInfo;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -85,7 +89,9 @@ public class UsageHandler {
     }
 
     /**
-     * 查询时间范围内的使用情况合并后的数据。
+     * 查询时间范围内的使用情况合并后的数据，
+     * 内部实际上就是通过{@link UsageStatsManager#queryUsageStats(int, long, long)}方法获取的数据（但是时使用了INTERVAL_BEST），
+     * 但是进行了整合，使每个包名只对应一个UsageStats对象。
      *
      * @param period 查询的时间范围
      * @return 返回Map类型数据，将每个APP的UsageStats使用数据合并成同一个
@@ -168,6 +174,16 @@ public class UsageHandler {
 
     //wrapper UsageStatsManager public method.======================================================
 
+    //deal usage data=====================================
+    public List<UsageInfo> calUsageStatsByPeriod(int intervalType, long start, long end) {
+        //1. get system usage data.
+        //2. merge in total UsageStats.
+        List<UsageStats> periodList = queryUsageStats(intervalType, start, end);
+
+        return null;
+    }
+    //deal usage data=====================================
+
     //handle system model field.======================================================
 
     /**
@@ -181,6 +197,11 @@ public class UsageHandler {
         info.mTotalTimeInForeground = usageStats.getTotalTimeInForeground();
     }
 
+    public static void coverPrivateField(UsageInfo info, UsageStats usageStats) {
+        info.mLaunchCount = ReflectUtils.reflect(usageStats).field("mLaunchCount").get();
+        info.mLastEvent = ReflectUtils.reflect(usageStats).field("mLastEvent").get();
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public static void coverAndroidQField(UsageInfo info, UsageStats usageStats) {
         info.mLastTimeForegroundServiceUsed = usageStats.getLastTimeForegroundServiceUsed();
@@ -190,6 +211,29 @@ public class UsageHandler {
     }
 
     //handle system model field.======================================================
+    public static List<UsageStats> mergeUsageStatsData(List<UsageStats> stats) {
+        if (stats.isEmpty()) {
+            return Collections.emptyList();
+        }
 
+        ArrayMap<String, UsageStats> aggregatedStats = new ArrayMap<>();
+        final int statCount = stats.size();
+        for (int i = 0; i < statCount; i++) {
+            UsageStats newStat = stats.get(i);
+            UsageStats existingStat = aggregatedStats.get(newStat.getPackageName());
+            if (existingStat == null) {
+                aggregatedStats.put(newStat.getPackageName(), newStat);
+            } else {
+                existingStat.add(newStat);
+            }
+        }
+
+        List<UsageStats> mergeData = new ArrayList<>();
+        for (Map.Entry<String, UsageStats> entry : aggregatedStats.entrySet()) {
+            mergeData.add(entry.getValue());
+        }
+
+        return mergeData;
+    }
 
 }

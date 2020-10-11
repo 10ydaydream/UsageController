@@ -15,6 +15,8 @@ import java.util.Locale;
 public class TimeUtils {
     private static final String TAG = "TimeUtils";
 
+    public static final String FORMAT_PATTERN_YMDHM = "yyyy年MM月dd日 HH:mm ";
+
     public static final long TIME_SECOND = 1000;
     public static final long TIME_MINUTE = 60000;
     public static final long TIME_HOUR = 3600000;

@@ -1,6 +1,7 @@
 package com.daydreaminger.android.usagecontroller.model;
 
-import com.blankj.utilcode.util.AppUtils;
+import android.util.ArrayMap;
+import android.util.SparseIntArray;
 
 /**
  * 记录必要的使用详情相关信息
@@ -9,9 +10,6 @@ import com.blankj.utilcode.util.AppUtils;
  * @date : 2020/10/5 13:39
  */
 public class UsageInfo {
-    //app info
-    public AppUtils.AppInfo mAppInfo;
-
     //===============UsageStats
 
     //SDK API提供可用的字段
@@ -56,21 +54,29 @@ public class UsageInfo {
 
     //需要反射获取的字段
     /**
-     * app启动运行次数
+     * 从命名上看是表示app启动运行次数，但是实际结果不是很准确（开发过程中覆盖安装重新启动后，值会增加2）
      */
     public int mLaunchCount;
     /**
      * 最后一次的事件
      */
     public int mLastEvent;
-
-//    public SparseIntArray mActivities = new SparseIntArray();
-//    public ArrayMap<String, Integer> mForegroundServices = new ArrayMap<>();
-
+    /**
+     * 保存前台Service的class名和最新的状态值
+     */
+    public SparseIntArray mActivities = new SparseIntArray();
+    /**
+     * 记录所有的Activity状态值，判断是否处于前台（Resume）状态
+     */
+    public ArrayMap<String, Integer> mForegroundServices = new ArrayMap<>();
+    /**
+     * 不知道有什么用？
+     */
+    public ArrayMap<String, ArrayMap<String, Integer>> mChooserCounts;
 
     @Override
     public String toString() {
-        return "\nUsageInfo{" +
+        return "UsageInfo{" +
                 "mPackageName='" + mPackageName + '\'' +
                 ", mBeginTimeStamp=" + mBeginTimeStamp +
                 ", mEndTimeStamp=" + mEndTimeStamp +
@@ -82,6 +88,9 @@ public class UsageInfo {
                 ", mTotalTimeVisible=" + mTotalTimeVisible +
                 ", mLaunchCount=" + mLaunchCount +
                 ", mLastEvent=" + mLastEvent +
-                '}' + "\n";
+                ", mActivities=" + mActivities +
+                ", mForegroundServices=" + mForegroundServices +
+                ", mChooserCounts=" + mChooserCounts +
+                '}';
     }
 }

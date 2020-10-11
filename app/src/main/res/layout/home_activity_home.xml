@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -8,9 +9,25 @@
         android:id="@+id/toolbar"
         layout="@layout/layout_toolbar" />
 
+    <TextView
+        android:id="@+id/tv_data_end_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:textSize="13dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        tools:text="数据获取时间" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_apps"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:padding="8dp" />
 
 </LinearLayout>

@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">屏幕时间管理</string>
 
+    <string name="data_end_time">当前数据截止时间：%s</string>
     <string name="format_hour">%d小时</string>
     <string name="format_minute">%d分</string>
     <string name="format_second">%d秒</string>
+    <string name="usage_use_count">使用次数：%d次</string>
+    <string name="usage_use_time">使用时长：%s</string>
 </resources>
