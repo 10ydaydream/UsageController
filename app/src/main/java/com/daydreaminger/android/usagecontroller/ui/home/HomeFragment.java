@@ -1,10 +1,9 @@
-package com.daydreaminger.android.usagecontroller.ui.activity;
+package com.daydreaminger.android.usagecontroller.ui.home;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.ArrayMap;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,67 +21,39 @@ import com.bumptech.glide.Glide;
 import com.daydreaminger.android.usagecontroller.AppHolder;
 import com.daydreaminger.android.usagecontroller.R;
 import com.daydreaminger.android.usagecontroller.model.UsageInfo;
+import com.daydreaminger.android.usagecontroller.ui.basic.AppBaseFragment;
 import com.daydreaminger.android.usagecontroller.utils.TimeUtils;
 import com.daydreaminger.android.usagecontroller.vm.UsageViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author : daydreaminger
- * @date : 2020/9/30 10:17
+ * @date : 2020/10/22 21:07
  */
-public class HomeActivity extends AppBaseActivity {
-    private static final String TAG = "HomeActivity";
+public class HomeFragment extends AppBaseFragment {
+    public static final String TAG = "HomeFragment";
 
-    TextView tvDataEndTime;
-    RecyclerView rvUsage;
-    UsageAdapter adapter;
-    List<UsageInfo> infoList = new ArrayList<>();
+    public static HomeFragment newInstance() {
+        HomeFragment fragment = new HomeFragment();
 
-    UsageViewModel mUsageViewModel;
+        return fragment;
+    }
 
+    public HomeFragment() {
+
+    }
+
+    @Nullable
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.home_activity_home);
-        initToolbar();
-        initViews();
-
-        mUsageViewModel = new ViewModelProvider(this).get(UsageViewModel.class);
-
-        updateDateEndTime(System.currentTimeMillis());
-        mUsageViewModel.getUsageStates()
-                .observe(this, usageStatsData -> {
-                    //after get data.
-                    Log.i(TAG, "onChanged: " + usageStatsData.usageInfoList.size());
-                    Log.i(TAG, "onChanged: " + usageStatsData.usageInfoList.toString());
-                    infoList.clear();
-                    infoList.addAll(usageStatsData.usageInfoList);
-                    if (adapter != null) {
-                        adapter.setAppInfoMap(usageStatsData.appInfoMap);
-                        adapter.notifyDataSetChanged();
-                    }
-                });
-        mUsageViewModel.asyncGetUsageState();
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.home_fragment_home, container, false);
     }
 
     @Override
-    protected void initToolbar() {
-        super.initToolbar();
-        setToolbarTitle("屏幕时间管理");
-    }
-
-    private void initViews() {
-        tvDataEndTime = findViewById(R.id.tv_data_end_time);
-        rvUsage = findViewById(R.id.rv_apps);
-        rvUsage.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new UsageAdapter(this, infoList);
-        rvUsage.setAdapter(adapter);
-    }
-
-    private void updateDateEndTime(long endTime) {
-        tvDataEndTime.setText(getString(R.string.data_end_time, TimeUtils.format(endTime, TimeUtils.FORMAT_PATTERN_YMDHM)));
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        new ViewModelProvider(getActivity()).get(UsageViewModel.class).calDayTotalUsage();
     }
 
     public static class UsageAdapter extends RecyclerView.Adapter<UsageAdapter.UsageHolder> {

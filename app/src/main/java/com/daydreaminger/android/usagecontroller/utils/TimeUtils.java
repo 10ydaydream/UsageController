@@ -59,4 +59,13 @@ public class TimeUtils {
         }
         return time;
     }
+
+    public static long currentTimeZero() {
+        return timeZero(System.currentTimeMillis());
+    }
+
+    public static long timeZero(long time) {
+        long zeroTime = time / TIME_DAY * TIME_DAY;
+        return zeroTime;
+    }
 }

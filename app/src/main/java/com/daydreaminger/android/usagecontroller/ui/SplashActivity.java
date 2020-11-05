@@ -1,4 +1,4 @@
-package com.daydreaminger.android.usagecontroller.ui.activity;
+package com.daydreaminger.android.usagecontroller.ui;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -7,12 +7,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.daydreaminger.android.usagecontroller.R;
+import com.daydreaminger.android.usagecontroller.ui.basic.AppBaseActivity;
+import com.daydreaminger.android.usagecontroller.ui.home.HomeActivity;
 import com.daydreaminger.android.usagecontroller.utils.AppSettingUtils;
 
 /**
@@ -22,6 +23,7 @@ import com.daydreaminger.android.usagecontroller.utils.AppSettingUtils;
 public class SplashActivity extends AppBaseActivity {
     private static final String TAG = "SplashActivity";
 
+    final int CODE_PERM_OVER_LAYER = 1024;
     private Handler handler;
 
     @Override
@@ -35,9 +37,9 @@ public class SplashActivity extends AppBaseActivity {
     protected void onResume() {
         super.onResume();
         handler.postDelayed(() -> {
-            Log.i(TAG, "run: ");
+            //check UsageStatus and overLayer permission.
             reqPermission();
-        }, 100);
+        }, 300);
     }
 
     /**
