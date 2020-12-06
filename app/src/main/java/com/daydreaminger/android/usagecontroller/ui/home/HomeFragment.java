@@ -13,7 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.AppUtils;
@@ -23,7 +22,7 @@ import com.daydreaminger.android.usagecontroller.R;
 import com.daydreaminger.android.usagecontroller.model.UsageInfo;
 import com.daydreaminger.android.usagecontroller.ui.basic.AppBaseFragment;
 import com.daydreaminger.android.usagecontroller.utils.TimeUtils;
-import com.daydreaminger.android.usagecontroller.vm.UsageViewModel;
+import com.daydreaminger.android.usagecontroller.viewmodel.UsageViewModel;
 
 import java.util.List;
 

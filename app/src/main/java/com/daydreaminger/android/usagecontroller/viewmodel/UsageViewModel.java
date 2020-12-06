@@ -1,4 +1,4 @@
-package com.daydreaminger.android.usagecontroller.vm;
+package com.daydreaminger.android.usagecontroller.viewmodel;
 
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;

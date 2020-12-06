@@ -2,12 +2,17 @@ package com.daydreaminger.android.usagecontroller.ui.basic;
 
 import android.os.Bundle;
 import android.text.Spannable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 
 import com.daydreaminger.android.usagecontroller.R;
 
@@ -17,9 +22,10 @@ import com.daydreaminger.android.usagecontroller.R;
  * @author : daydreaminger
  * @date : 2020/9/30 10:17
  */
-public abstract class AppBaseActivity extends AppCompatActivity {
+public abstract class AppBaseActivity<T extends ViewDataBinding> extends AppCompatActivity {
     private static final String TAG = "BaseActivity";
 
+    protected T rootViewDataBinding;
     protected Toolbar mToolbar;
 
     @Override
@@ -50,6 +56,23 @@ public abstract class AppBaseActivity extends AppCompatActivity {
 
     protected void setToolbarTitle(Spannable title) {
         mToolbar.setTitle(title);
+    }
+
+    @Override
+    public void setContentView(int layoutResID) {
+        setContentView(LayoutInflater.from(this).inflate(layoutResID, null));
+    }
+
+    @Override
+    public void setContentView(View view) {
+        super.setContentView(view);
+        rootViewDataBinding = DataBindingUtil.bind(view);
+    }
+
+    @Override
+    public void setContentView(View view, ViewGroup.LayoutParams params) {
+        super.setContentView(view, params);
+        rootViewDataBinding = DataBindingUtil.bind(view);
     }
 
     @Override
