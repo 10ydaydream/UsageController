@@ -22,11 +22,13 @@ import com.daydreaminger.android.usagecontroller.R;
 import com.daydreaminger.android.usagecontroller.model.UsageInfo;
 import com.daydreaminger.android.usagecontroller.ui.basic.AppBaseFragment;
 import com.daydreaminger.android.usagecontroller.utils.TimeUtils;
-import com.daydreaminger.android.usagecontroller.viewmodel.UsageViewModel;
+import com.daydreaminger.android.usagecontroller.viewmodel.ToolbarViewModel;
 
 import java.util.List;
 
 /**
+ * home fragment page.
+ *
  * @author : daydreaminger
  * @date : 2020/10/22 21:07
  */
@@ -38,6 +40,8 @@ public class HomeFragment extends AppBaseFragment {
 
         return fragment;
     }
+
+    private ToolbarViewModel mToolbarViewModel;
 
     public HomeFragment() {
 
@@ -52,7 +56,13 @@ public class HomeFragment extends AppBaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        new ViewModelProvider(getActivity()).get(UsageViewModel.class).calDayUsage();
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        ViewModelProvider viewModelProvider = new ViewModelProvider(getActivity());
+        mToolbarViewModel = viewModelProvider.get(ToolbarViewModel.class);
+        mToolbarViewModel.setTitleData("屏幕时间管理");
     }
 
     public static class UsageAdapter extends RecyclerView.Adapter<UsageAdapter.UsageHolder> {

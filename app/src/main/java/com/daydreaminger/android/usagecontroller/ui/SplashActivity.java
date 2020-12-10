@@ -2,6 +2,7 @@ package com.daydreaminger.android.usagecontroller.ui;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,7 +14,6 @@ import androidx.annotation.Nullable;
 import com.daydreaminger.android.usagecontroller.R;
 import com.daydreaminger.android.usagecontroller.databinding.HomeActivitySplashBinding;
 import com.daydreaminger.android.usagecontroller.ui.basic.AppBaseActivity;
-import com.daydreaminger.android.usagecontroller.ui.home.HomeActivity;
 import com.daydreaminger.android.usagecontroller.utils.AppSettingUtils;
 
 /**
@@ -95,7 +95,7 @@ public class SplashActivity extends AppBaseActivity<HomeActivitySplashBinding> {
                     break;
                 case REQ_END:
                     //request get usage stat permission
-                    HomeActivity.start(SplashActivity.this);
+                    startActivity(new Intent(SplashActivity.this, HomeActivity.class));
                     break;
             }
         }
