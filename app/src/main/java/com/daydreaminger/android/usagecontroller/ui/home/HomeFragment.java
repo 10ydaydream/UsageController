@@ -52,7 +52,7 @@ public class HomeFragment extends AppBaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        new ViewModelProvider(getActivity()).get(UsageViewModel.class).calDayTotalUsage();
+        new ViewModelProvider(getActivity()).get(UsageViewModel.class).calDayUsage();
     }
 
     public static class UsageAdapter extends RecyclerView.Adapter<UsageAdapter.UsageHolder> {

@@ -17,7 +17,7 @@ public class App extends Application {
 
         AppHolder.init(this);
 
-        //bugly
+        //bugly initialize.
         CrashReport.initCrashReport(this, Constants.BuglyAppId, BuildConfig.DEBUG);
     }
 }

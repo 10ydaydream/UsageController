@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
+import androidx.fragment.app.FragmentManager;
 
 import com.daydreaminger.android.usagecontroller.R;
 
@@ -27,14 +28,20 @@ public abstract class AppBaseActivity<T extends ViewDataBinding> extends AppComp
 
     protected T rootViewDataBinding;
     protected Toolbar mToolbar;
+    protected FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        fragmentManager = getSupportFragmentManager();
     }
 
     protected void initToolbar() {
         mToolbar = findViewById(R.id.toolbar);
+        if (mToolbar != null) {
+            return;
+        }
+
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -51,11 +58,13 @@ public abstract class AppBaseActivity<T extends ViewDataBinding> extends AppComp
     }
 
     protected void setToolbarTitle(String title) {
-        mToolbar.setTitle(title);
+        if (mToolbar != null) {
+            mToolbar.setTitle(title);
+        }
     }
 
     protected void setToolbarTitle(Spannable title) {
-        mToolbar.setTitle(title);
+        if (mToolbar != null) mToolbar.setTitle(title);
     }
 
     @Override
@@ -77,6 +86,10 @@ public abstract class AppBaseActivity<T extends ViewDataBinding> extends AppComp
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (fragmentManager.getBackStackEntryCount() > 1) {
+            fragmentManager.popBackStackImmediate();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

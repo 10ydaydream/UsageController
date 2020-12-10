@@ -2,17 +2,18 @@ package com.daydreaminger.android.usagecontroller.viewmodel;
 
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
+import android.util.Log;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.daydreaminger.android.usagecontroller.control.UsageHandler;
+import com.daydreaminger.android.usagecontroller.model.UsageData;
 import com.daydreaminger.android.usagecontroller.utils.TimeUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
@@ -29,40 +30,43 @@ import io.reactivex.schedulers.Schedulers;
 public class UsageViewModel extends ViewModel {
     private static final String TAG = "UsageViewModel";
 
-    MutableLiveData<List<UsageStats>> dayUsage = new MutableLiveData<>();
+    MutableLiveData<List<UsageData>> usageDataWrapper = new MutableLiveData<>();
 
-    public MutableLiveData<List<UsageStats>> getDayUsage() {
-        return dayUsage;
+    public LiveData<List<UsageData>> getUsageDataWrapper() {
+        return usageDataWrapper;
     }
 
     /**
      * 统计当天使用总时间
      */
-    public void calDayTotalUsage() {
+    public void calDayUsage() {
         Disposable calTask = Observable
-                .create((ObservableOnSubscribe<List<UsageStats>>) emitter -> {
+                .create((ObservableOnSubscribe<List<UsageData>>) emitter -> {
+
                     long zeroTime = TimeUtils.currentTimeZero();
                     List<UsageStats> usageStatsList = UsageHandler.getInstance()
                             .queryUsageStats(UsageStatsManager.INTERVAL_DAILY, zeroTime, zeroTime + TimeUtils.TIME_DAY);
 
-                    Map<String, UsageStats> mergeMap = new HashMap<>();
+                    //analyza
+                    List<UsageData> usageData = new ArrayList<>();
                     for (UsageStats usageStats : usageStatsList) {
-                        if (mergeMap.containsKey(usageStats.getPackageName())) {
-                            mergeMap.get(usageStats.getPackageName()).add(usageStats);
-                        } else {
-                            mergeMap.put(usageStats.getPackageName(), usageStats);
-                        }
+
                     }
 
-                    List<UsageStats> mergeList = new ArrayList<>();
-                    for (Map.Entry<String, UsageStats> entry : mergeMap.entrySet()) {
-                        mergeList.add(entry.getValue());
-                    }
-                    emitter.onNext(mergeList);
+                    emitter.onNext(usageData);
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(list -> dayUsage.setValue(list));
+                .subscribe(usageStats -> {
+                    //
+                    Log.i(TAG, "accept: ");
+                }, throwable -> {
+                    //
+                    Log.i(TAG, "accept: ");
+                }, () -> {
+                    //
+                    Log.i(TAG, "run: ");
+                });
     }
 
     public void loadUsageInfo() {
