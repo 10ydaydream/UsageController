@@ -19,6 +19,7 @@ import com.blankj.utilcode.util.AppUtils;
 import com.bumptech.glide.Glide;
 import com.daydreaminger.android.usagecontroller.AppHolder;
 import com.daydreaminger.android.usagecontroller.R;
+import com.daydreaminger.android.usagecontroller.databinding.HomeFragmentHomeBinding;
 import com.daydreaminger.android.usagecontroller.model.UsageInfo;
 import com.daydreaminger.android.usagecontroller.ui.basic.AppBaseFragment;
 import com.daydreaminger.android.usagecontroller.utils.TimeUtils;
@@ -32,7 +33,7 @@ import java.util.List;
  * @author : daydreaminger
  * @date : 2020/10/22 21:07
  */
-public class HomeFragment extends AppBaseFragment {
+public class HomeFragment extends AppBaseFragment<HomeFragmentHomeBinding> {
     public static final String TAG = "HomeFragment";
 
     public static HomeFragment newInstance() {

@@ -37,6 +37,7 @@ public class HomeActivity extends AppBaseActivity<HomeActivitySplashBinding> {
     }
 
     private void initObserve() {
+        //update toolbar title.
         mToolbarViewModel.getTitleData().observe(this, s -> {
             if (TextUtils.isEmpty(s)) {
                 s = "";

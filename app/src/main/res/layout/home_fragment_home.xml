@@ -10,14 +10,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!--time period-->
         <TextView
             android:id="@+id/tvTop"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:textSize="18dp"
+            android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:text="xxxxx"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_usage"
