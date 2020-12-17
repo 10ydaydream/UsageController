@@ -7,7 +7,17 @@ use MVVM architecture, dependence library has:
     *
 * RxJava2
 
-implement with one Activity about more Fragment constructure.
+realize by one Activity with more Fragment construct.
+
+## view
+some data showing page.
+1. Home: show today usage list.
+2. app usage data detail.
+3. app message.
+
+## view model
 
 ## model design
+
+
 

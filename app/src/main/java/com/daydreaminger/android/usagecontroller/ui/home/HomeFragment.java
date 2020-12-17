@@ -24,6 +24,7 @@ import com.daydreaminger.android.usagecontroller.model.UsageInfo;
 import com.daydreaminger.android.usagecontroller.ui.basic.AppBaseFragment;
 import com.daydreaminger.android.usagecontroller.utils.TimeUtils;
 import com.daydreaminger.android.usagecontroller.viewmodel.ToolbarViewModel;
+import com.daydreaminger.android.usagecontroller.viewmodel.UsageAnalyzerViewModel;
 
 import java.util.List;
 
@@ -43,6 +44,7 @@ public class HomeFragment extends AppBaseFragment<HomeFragmentHomeBinding> {
     }
 
     private ToolbarViewModel mToolbarViewModel;
+    private UsageAnalyzerViewModel mAnalyzerViewModel;
 
     public HomeFragment() {
 
@@ -64,6 +66,13 @@ public class HomeFragment extends AppBaseFragment<HomeFragmentHomeBinding> {
         ViewModelProvider viewModelProvider = new ViewModelProvider(getActivity());
         mToolbarViewModel = viewModelProvider.get(ToolbarViewModel.class);
         mToolbarViewModel.setTitleData("屏幕时间管理");
+
+        mAnalyzerViewModel = viewModelProvider.get(UsageAnalyzerViewModel.class);
+        mAnalyzerViewModel.getAnalyzeResult().observe(getViewLifecycleOwner(), usageStats -> {
+            //update view
+            //
+        });
+        mAnalyzerViewModel.getTodayAppUsage();
     }
 
     public static class UsageAdapter extends RecyclerView.Adapter<UsageAdapter.UsageHolder> {
