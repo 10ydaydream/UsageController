@@ -96,6 +96,7 @@ public class SplashActivity extends AppBaseActivity<HomeActivitySplashBinding> {
                 case REQ_END:
                     //request get usage stat permission
                     startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+                    finish();
                     break;
             }
         }

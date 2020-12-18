@@ -1,9 +1,9 @@
 package com.daydreaminger.android.usagecontroller.ui.home;
 
+import android.app.usage.UsageStats;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.AppUtils;
@@ -20,12 +21,12 @@ import com.bumptech.glide.Glide;
 import com.daydreaminger.android.usagecontroller.AppHolder;
 import com.daydreaminger.android.usagecontroller.R;
 import com.daydreaminger.android.usagecontroller.databinding.HomeFragmentHomeBinding;
-import com.daydreaminger.android.usagecontroller.model.UsageInfo;
 import com.daydreaminger.android.usagecontroller.ui.basic.AppBaseFragment;
 import com.daydreaminger.android.usagecontroller.utils.TimeUtils;
 import com.daydreaminger.android.usagecontroller.viewmodel.ToolbarViewModel;
 import com.daydreaminger.android.usagecontroller.viewmodel.UsageAnalyzerViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,6 +47,9 @@ public class HomeFragment extends AppBaseFragment<HomeFragmentHomeBinding> {
     private ToolbarViewModel mToolbarViewModel;
     private UsageAnalyzerViewModel mAnalyzerViewModel;
 
+    //view
+    private UsageAdapter mAdapterApps;
+
     public HomeFragment() {
 
     }
@@ -59,7 +63,14 @@ public class HomeFragment extends AppBaseFragment<HomeFragmentHomeBinding> {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initViews(view);
         initViewModel();
+    }
+
+    private void initViews(View view) {
+        mRrootViewDataBinding.rvUsage.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mAdapterApps = new UsageAdapter(getActivity());
+        mRrootViewDataBinding.rvUsage.setAdapter(mAdapterApps);
     }
 
     private void initViewModel() {
@@ -70,24 +81,28 @@ public class HomeFragment extends AppBaseFragment<HomeFragmentHomeBinding> {
         mAnalyzerViewModel = viewModelProvider.get(UsageAnalyzerViewModel.class);
         mAnalyzerViewModel.getAnalyzeResult().observe(getViewLifecycleOwner(), usageStats -> {
             //update view
-            //
+            mAdapterApps.setInfoList(usageStats);
+            mAdapterApps.notifyDataSetChanged();
         });
         mAnalyzerViewModel.getTodayAppUsage();
     }
 
     public static class UsageAdapter extends RecyclerView.Adapter<UsageAdapter.UsageHolder> {
 
-        private ArrayMap<String, AppUtils.AppInfo> appInfoMap;
-        private List<UsageInfo> infoList;
+        private List<UsageStats> infoList;
         private LayoutInflater layoutInflater;
 
-        public UsageAdapter(@NonNull Context context, @NonNull List<UsageInfo> list) {
+        public UsageAdapter(@NonNull Context context) {
+            this(context, new ArrayList<>());
+        }
+
+        public UsageAdapter(@NonNull Context context, @NonNull List<UsageStats> list) {
             layoutInflater = LayoutInflater.from(context);
             infoList = list;
         }
 
-        public void setAppInfoMap(ArrayMap<String, AppUtils.AppInfo> appInfo) {
-            appInfoMap = appInfo;
+        public void setInfoList(@NonNull List<UsageStats> list) {
+            infoList = list;
         }
 
         @NonNull
@@ -98,8 +113,8 @@ public class HomeFragment extends AppBaseFragment<HomeFragmentHomeBinding> {
 
         @Override
         public void onBindViewHolder(@NonNull UsageHolder holder, int position) {
-            UsageInfo info = infoList.get(position);
-            AppUtils.AppInfo appInfo = appInfoMap.get(info.mPackageName);
+            UsageStats info = infoList.get(position);
+            AppUtils.AppInfo appInfo = AppUtils.getAppInfo(info.getPackageName());
             if (appInfo != null) {
                 Glide.with(holder.ivAppIcon).load(appInfo.getIcon())
                         .into(holder.ivAppIcon);
@@ -108,13 +123,13 @@ public class HomeFragment extends AppBaseFragment<HomeFragmentHomeBinding> {
             holder.tvUsage.setText(getUsageCount(info));
         }
 
-        private String getUsageCount(UsageInfo info) {
+        private String getUsageCount(UsageStats info) {
             String value = "";
 
             //hour
-            int hour = (int) (info.mTotalTimeInForeground / TimeUtils.TIME_HOUR);
-            int minute = (int) (info.mTotalTimeInForeground % TimeUtils.TIME_HOUR / TimeUtils.TIME_MINUTE);
-            int second = (int) (info.mTotalTimeInForeground % TimeUtils.TIME_MINUTE / TimeUtils.TIME_SECOND);
+            int hour = (int) (info.getTotalTimeInForeground() / TimeUtils.TIME_HOUR);
+            int minute = (int) (info.getTotalTimeInForeground() % TimeUtils.TIME_HOUR / TimeUtils.TIME_MINUTE);
+            int second = (int) (info.getTotalTimeInForeground() % TimeUtils.TIME_MINUTE / TimeUtils.TIME_SECOND);
 
 
             value += hour == 0 ? "" : AppHolder.getAppContext().getString(R.string.format_hour, hour);

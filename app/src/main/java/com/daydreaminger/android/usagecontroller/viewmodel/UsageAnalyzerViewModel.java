@@ -11,6 +11,7 @@ import com.daydreaminger.android.usagecontroller.control.UsageHandler;
 import com.daydreaminger.android.usagecontroller.utils.TimeUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -50,6 +51,27 @@ public class UsageAnalyzerViewModel extends ViewModel {
                             mergeData.add(usage);
                         }
                     }
+
+                    //filter no use
+                    List<UsageStats> hasUsed = new ArrayList<>();
+                    for (UsageStats usageStats : mergeData) {
+                        if (usageStats.getTotalTimeInForeground() > 1000) {
+                            hasUsed.add(usageStats);
+                        }
+                    }
+                    mergeData.clear();
+                    mergeData.addAll(hasUsed);
+
+                    //sort by usage total time.
+                    Collections.sort(mergeData, (o1, o2) -> {
+                        if (o1.getTotalTimeInForeground() > o2.getTotalTimeInForeground()) {
+                            return -1;
+                        } else if (o1.getTotalTimeInForeground() < o2.getTotalTimeInForeground()) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+
                     emitter.onNext(mergeData);
 
                 }).subscribeOn(Schedulers.io())

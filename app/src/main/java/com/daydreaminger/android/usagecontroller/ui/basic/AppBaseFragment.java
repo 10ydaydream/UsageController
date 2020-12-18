@@ -19,11 +19,11 @@ public class AppBaseFragment<T extends ViewDataBinding> extends Fragment {
     /**
      * instance created after method {@link #onViewCreated(View, Bundle)} execute.
      */
-    protected T rootViewDataBinding;
+    protected T mRrootViewDataBinding;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        rootViewDataBinding = DataBindingUtil.bind(view);
+        mRrootViewDataBinding = DataBindingUtil.bind(view);
     }
 }
