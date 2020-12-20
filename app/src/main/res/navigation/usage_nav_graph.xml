@@ -11,16 +11,29 @@
         android:label="HomeFragment"
         tools:layout="@layout/home_fragment_home">
 
-
         <action
             android:id="@+id/action_homeFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_appInfoFragment"
+            app:destination="@id/appInfoFragment" />
+
     </fragment>
 
     <fragment
         android:id="@+id/detailFragment"
         android:name="com.daydreaminger.android.usagecontroller.ui.detail.UsageDetailFragment"
         android:label="UsageDetail"
-        tools:layout="@layout/usagedetail_fragment_mian" />
+        tools:layout="@layout/usagedetail_fragment_mian">
+        <action
+            android:id="@+id/action_detailFragment_to_appInfoFragment"
+            app:destination="@id/appInfoFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/appInfoFragment"
+        android:name="com.daydreaminger.android.usagecontroller.ui.info.AppInfoFragment"
+        android:label="AppInfo"
+        tools:layout="@layout/appinfo_fragment_info" />
 
 </navigation>
