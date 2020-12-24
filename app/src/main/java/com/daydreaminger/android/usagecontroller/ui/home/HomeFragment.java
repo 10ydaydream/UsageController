@@ -1,30 +1,29 @@
 package com.daydreaminger.android.usagecontroller.ui.home;
 
 import android.app.usage.UsageStats;
-import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.AppUtils;
 import com.bumptech.glide.Glide;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.daydreaminger.android.usagecontroller.AppHolder;
 import com.daydreaminger.android.usagecontroller.R;
 import com.daydreaminger.android.usagecontroller.databinding.HomeFragmentHomeBinding;
 import com.daydreaminger.android.usagecontroller.ui.basic.AppBaseFragment;
 import com.daydreaminger.android.usagecontroller.utils.TimeUtils;
-import com.daydreaminger.android.usagecontroller.viewmodel.ToolbarViewModel;
 import com.daydreaminger.android.usagecontroller.viewmodel.UsageAnalyzerViewModel;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,41 +43,37 @@ public class HomeFragment extends AppBaseFragment<HomeFragmentHomeBinding> {
         return fragment;
     }
 
-    private ToolbarViewModel mToolbarViewModel;
     private UsageAnalyzerViewModel mAnalyzerViewModel;
 
     //view
     private UsageAdapter mAdapterApps;
 
     public HomeFragment() {
-
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.home_fragment_home, container, false);
+        super(R.layout.home_fragment_home);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
-        initViewModel();
     }
 
     private void initViews(View view) {
-        mRrootViewDataBinding.rvUsage.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapterApps = new UsageAdapter(getActivity());
-        mRrootViewDataBinding.rvUsage.setAdapter(mAdapterApps);
+        mRootViewDataBinding.rvUsage.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mAdapterApps = new UsageAdapter();
+        mRootViewDataBinding.rvUsage.setAdapter(mAdapterApps);
+        mAdapterApps.setOnItemClickListener((adapter, view1, position) -> {
+            //start next fragment.
+            NavHostFragment.findNavController(this).navigate(R.id.action_homeFragment_to_detailFragment);
+        });
     }
 
-    private void initViewModel() {
-        ViewModelProvider viewModelProvider = new ViewModelProvider(getActivity());
-        mToolbarViewModel = viewModelProvider.get(ToolbarViewModel.class);
+    @Override
+    protected void initViewModel() {
+        super.initViewModel();
         mToolbarViewModel.setTitleData("屏幕时间管理");
 
-        mAnalyzerViewModel = viewModelProvider.get(UsageAnalyzerViewModel.class);
+        mAnalyzerViewModel = mViewModelProvider.get(UsageAnalyzerViewModel.class);
         mAnalyzerViewModel.getAnalyzeResult().observe(getViewLifecycleOwner(), usageStats -> {
             //update view
             mAdapterApps.setInfoList(usageStats);
@@ -87,33 +82,22 @@ public class HomeFragment extends AppBaseFragment<HomeFragmentHomeBinding> {
         mAnalyzerViewModel.getTodayAppUsage();
     }
 
-    public static class UsageAdapter extends RecyclerView.Adapter<UsageAdapter.UsageHolder> {
+    public static class UsageAdapter extends BaseQuickAdapter<UsageStats, UsageHolder> {
 
-        private List<UsageStats> infoList;
-        private LayoutInflater layoutInflater;
-
-        public UsageAdapter(@NonNull Context context) {
-            this(context, new ArrayList<>());
+        public UsageAdapter() {
+            this(null);
         }
 
-        public UsageAdapter(@NonNull Context context, @NonNull List<UsageStats> list) {
-            layoutInflater = LayoutInflater.from(context);
-            infoList = list;
+        public UsageAdapter(List<UsageStats> list) {
+            super(R.layout.home_item_usage_data, list == null ? new ArrayList<>() : list);
         }
 
         public void setInfoList(@NonNull List<UsageStats> list) {
-            infoList = list;
-        }
-
-        @NonNull
-        @Override
-        public UsageHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new UsageHolder(layoutInflater.inflate(R.layout.home_item_usage_data, parent, false));
+            setList(list);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull UsageHolder holder, int position) {
-            UsageStats info = infoList.get(position);
+        protected void convert(@NotNull UsageHolder holder, UsageStats info) {
             AppUtils.AppInfo appInfo = AppUtils.getAppInfo(info.getPackageName());
             if (appInfo != null) {
                 Glide.with(holder.ivAppIcon).load(appInfo.getIcon())
@@ -141,23 +125,18 @@ public class HomeFragment extends AppBaseFragment<HomeFragmentHomeBinding> {
 
             return AppHolder.getAppContext().getString(R.string.usage_use_time, value);
         }
+    }
 
-        @Override
-        public int getItemCount() {
-            return infoList == null ? 0 : infoList.size();
-        }
+    protected static class UsageHolder extends BaseViewHolder {
 
-        private static class UsageHolder extends RecyclerView.ViewHolder {
+        ImageView ivAppIcon;
+        TextView tvApp, tvUsage;
 
-            ImageView ivAppIcon;
-            TextView tvApp, tvUsage;
-
-            public UsageHolder(@NonNull View itemView) {
-                super(itemView);
-                ivAppIcon = itemView.findViewById(R.id.iv_icon);
-                tvApp = itemView.findViewById(R.id.tv_app);
-                tvUsage = itemView.findViewById(R.id.tv_usage);
-            }
+        public UsageHolder(@NonNull View itemView) {
+            super(itemView);
+            ivAppIcon = itemView.findViewById(R.id.iv_icon);
+            tvApp = itemView.findViewById(R.id.tv_app);
+            tvUsage = itemView.findViewById(R.id.tv_usage);
         }
     }
 }
