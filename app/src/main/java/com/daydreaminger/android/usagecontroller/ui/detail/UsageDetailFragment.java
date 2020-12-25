@@ -5,7 +5,6 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
 
 import com.daydreaminger.android.usagecontroller.R;
 import com.daydreaminger.android.usagecontroller.databinding.UsagedetailFragmentMianBinding;
@@ -32,6 +31,6 @@ public class UsageDetailFragment extends AppBaseFragment<UsagedetailFragmentMian
     protected void initViewModel() {
         super.initViewModel();
         mToolbarViewModel.setTitleData("使用详情");
-
+        mToolbarViewModel.setUpperIconStatusData(true);
     }
 }

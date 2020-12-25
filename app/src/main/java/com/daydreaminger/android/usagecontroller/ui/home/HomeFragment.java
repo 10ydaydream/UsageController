@@ -72,6 +72,7 @@ public class HomeFragment extends AppBaseFragment<HomeFragmentHomeBinding> {
     protected void initViewModel() {
         super.initViewModel();
         mToolbarViewModel.setTitleData("屏幕时间管理");
+        mToolbarViewModel.setUpperIconStatusData(false);
 
         mAnalyzerViewModel = mViewModelProvider.get(UsageAnalyzerViewModel.class);
         mAnalyzerViewModel.getAnalyzeResult().observe(getViewLifecycleOwner(), usageStats -> {

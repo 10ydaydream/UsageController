@@ -44,5 +44,6 @@ public class HomeActivity extends AppBaseActivity<HomeActivitySplashBinding> {
             }
             setToolbarTitle(s);
         });
+        mToolbarViewModel.getUpperIconStatus().observe(this, this::showToolbarUpperIcon);
     }
 }

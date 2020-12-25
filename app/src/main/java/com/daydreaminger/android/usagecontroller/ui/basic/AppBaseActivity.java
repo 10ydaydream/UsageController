@@ -1,5 +1,6 @@
 package com.daydreaminger.android.usagecontroller.ui.basic;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.view.LayoutInflater;
@@ -14,6 +15,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.daydreaminger.android.usagecontroller.R;
 
@@ -38,6 +41,7 @@ public abstract class AppBaseActivity<T extends ViewDataBinding> extends AppComp
 
     protected void initToolbar() {
         mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
         if (mToolbar != null) {
             return;
         }
@@ -64,7 +68,19 @@ public abstract class AppBaseActivity<T extends ViewDataBinding> extends AppComp
     }
 
     protected void setToolbarTitle(Spannable title) {
-        if (mToolbar != null) mToolbar.setTitle(title);
+        if (mToolbar != null) {
+            mToolbar.setTitle(title);
+        }
+    }
+
+    protected void showToolbarUpperIcon(boolean show) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(show);
+            if (show) {
+                mToolbar.setNavigationOnClickListener(v -> onBackPressed());
+            }
+        }
     }
 
     @Override
@@ -84,10 +100,12 @@ public abstract class AppBaseActivity<T extends ViewDataBinding> extends AppComp
         rootViewDataBinding = DataBindingUtil.bind(view);
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public void onBackPressed() {
-        if (fragmentManager.getBackStackEntryCount() > 1) {
-            fragmentManager.popBackStackImmediate();
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_container);
+        if (navController.getBackStack().size() > 1) {
+            navController.popBackStack();
         } else {
             super.onBackPressed();
         }
